@@ -1,0 +1,12 @@
+{% extends "generator/base.html" %}
+
+{% block title %}テキスト登録{% endblock title %}
+
+{% block content %}
+    <h4 class="mt-4 border-bottom">テキスト登録</h4>
+    <form action="{% url 'generator:doc_register' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">生成</button>
+    </form>
+{% endblock content %}
