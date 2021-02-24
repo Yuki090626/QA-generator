@@ -18,7 +18,7 @@ from .squad_utils import evaluate, write_predictions
 from .eval import Result, to_string
 
 
-def QA_generation(filename, modelname):
+def QA_generation(filename, modelname, savename):
     parser = argparse.ArgumentParser()
     parser.add_argument("--seed", default=1004, type=int)
     parser.add_argument('--debug', dest='debug', action='store_true')
@@ -98,7 +98,7 @@ def QA_generation(filename, modelname):
                 dic = {}
                 dic['context'] = to_string(c_ids[i], tokenizer)
                 dic['question'] = to_string(batch_prior_q_ids[i], tokenizer)
-                dic['answer'] = to_string(c_ids[i][batch_prior_start[i]:(batch_prior_end[i] + 1)], tokenizer)
+                dic['answer'] = to_string(c_ids[i][batch_prior_start[i]:(batch_prior_end[i] + 1)], tokenizer).replace('[UNK]', '')
                 tmp[n].append(dic)
 
         for i in range(len(c_ids)):
@@ -139,15 +139,20 @@ def QA_generation(filename, modelname):
             idx += 32
 
         results = []
+        answers = [] # 重複対応
         for data in batch:
-            results.extend(docs_to_qas(data, trainer, tokenizer))
+            qacs = docs_to_qas(data, trainer, tokenizer)
+            for qac in qacs:
+                if qac['answer'][:20] not in answers:
+                    answers.append(qac['answer'][:20])
+                    results.append(qac)
+            # results.extend(docs_to_qas(data, trainer, tokenizer))
 
         df = pd.DataFrame(results, columns=['question', 'answer'])
         df.to_csv(save_dir, encoding=save_encoding)
 
         return results
 
-    savename = 'media/documents/result.csv'
     results = qa_generation(filename, savename, trainer, tokenizer, save_encoding='cp932')
 
     return results

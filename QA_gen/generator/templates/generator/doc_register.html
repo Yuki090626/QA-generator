@@ -1,9 +1,10 @@
 {% extends "generator/base.html" %}
 
-{% block title %}テキスト登録{% endblock title %}
+{% block title %}QAジェネレータ{% endblock title %}
 
 {% block content %}
-    <h4 class="mt-4 border-bottom">テキスト登録</h4>
+    <h3 class="mt-4 border-bottom">QA生成支援ツール</h3>
+    <h4 class="mt-4 border-bottom">ドキュメントを選択してください</h4>
     <form action="{% url 'generator:doc_register' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}

@@ -1,10 +1,12 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django import forms
 from django.views.generic.list import ListView
+import pandas as pd
+
 from .models import Document, QAC
 from .vae import generator
-import glob
+
 
 
 class DocumentForm(forms.ModelForm):
@@ -25,7 +27,8 @@ def doc_register(request):
 
             target = 'media/' + Document.objects.all()[0].document.name
             model = 'media/model/best_f1_model.pt'
-            results = generator.QA_generation(target, model)
+            save = 'media/documents/result.csv'
+            results = generator.QA_generation(target, model, save)
             qacs = QAC.objects.all()
             for qac in qacs:
                 qac.delete()
@@ -54,3 +57,27 @@ class ResultList(ListView):
         self.object_list = QAC.objects.all()
         context = self.get_context_data(object_list=self.object_list)
         return self.render_to_response(context)
+
+
+def qac_del(request, qac_idx):
+    qacs = QAC.objects.all()
+    dics = []
+    local_idx = 0
+    for qac in qacs:
+        if qac.idx == qac_idx:
+            qac.delete()
+        else:
+            qac.idx = local_idx
+            qac.save()
+            local_idx += 1
+            dic = {}
+            # dic['context'] = qac.context
+            dic['answer'] = qac.answer
+            dic['question'] = qac.question
+            dics.append(dic)
+    # csvを更新
+    save = 'media/documents/result.csv'
+    df = pd.DataFrame(dics, columns=['question', 'answer'])
+    df.to_csv(save, encoding='cp932')
+
+    return redirect('generator:gen_result')
