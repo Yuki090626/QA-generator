@@ -4,30 +4,23 @@
 
 {% block content %}
     <h3 class="mt-4 border-bottom">QA生成支援ツール</h3>
-    <h4 class="mt-4 border-bottom">生成結果（QA一覧）</h4>
+    <h4 class="mt-4 border-bottom">生成結果（ドキュメント一覧）</h4>
 
-    <p><a href="../media/documents/result.csv" class="btn btn-primary" download="result.csv"> CSVダウンロード </a></p>
-    <p><a href="{% url 'generator:doc_list' %}" class="btn btn-primary"> ドキュメント確認 </a></p>
+    <p><a href="{% url 'generator:gen_result' %}" class="btn btn-primary"> QA一覧 </a></p>
 
     <table class="table table-striped table-bordered">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>質問</th>
-          <th>回答</th>
-          <th>操作</th>
+          <th scope="col">ドキュメント</th>
+          <th scope="col">操作</th>
         </tr>
       </thead>
       <tbody>
-        {% for qac in qacs %}
+        {% for doc in docs %}
         <tr>
-          <td>{{ qac.idx }}</td>
-          <td>{{ qac.question|linebreaksbr }}</td>
+          <td>{{ doc.context }}</td>
           <td>
-            {{ qac.answer|linebreaksbr }}
-          </td>
-          <td>
-            <a href="{% url 'generator:qac_del' qac_idx=qac.idx %}" class="btn btn-outline-danger btn-sm">削除</a>
+            <a href="{% url 'generator:doc_qa_list' doc_id=doc.id %}" class="btn btn-outline-info btn-sm">QAを表示</a>
           </td>
         </tr>
         {% endfor %}

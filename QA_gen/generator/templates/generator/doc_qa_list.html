@@ -1,0 +1,47 @@
+{% extends "generator/base.html" %}
+
+{% block title %}QAジェネレータ{% endblock title %}
+
+{% block content %}
+    <h3 class="mt-4 border-bottom">QA生成支援ツール</h3>
+    <h4 class="mt-4 border-bottom">ドキュメントQA</h4>
+
+    <p><a href="{% url 'generator:doc_list' %}" class="btn btn-primary"> ドキュメント確認 </a></p>
+    <p><a href="{% url 'generator:gen_result' %}" class="btn btn-primary"> QA一覧 </a></p>
+
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>ドキュメント</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ doc.context|linebreaksbr }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>質問</th>
+          <th>回答</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for qac in qacs %}
+        <tr>
+          <td>{{ qac.idx }}</td>
+          <td>{{ qac.question|linebreaksbr }}</td>
+          <td>{{ qac.answer|linebreaksbr }}</td>
+          <td>
+            <a href="" class="btn btn-outline-danger btn-sm">削除</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+{% endblock content %}

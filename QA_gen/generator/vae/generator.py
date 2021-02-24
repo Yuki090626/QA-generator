@@ -96,7 +96,7 @@ def QA_generation(filename, modelname, savename):
 
             for i in range(len(c_ids)):
                 dic = {}
-                dic['context'] = to_string(c_ids[i], tokenizer)
+                dic['context'] = to_string(c_ids[i], tokenizer).replace('[UNK]', '')
                 dic['question'] = to_string(batch_prior_q_ids[i], tokenizer)
                 dic['answer'] = to_string(c_ids[i][batch_prior_start[i]:(batch_prior_end[i] + 1)], tokenizer).replace('[UNK]', '')
                 tmp[n].append(dic)

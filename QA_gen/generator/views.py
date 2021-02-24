@@ -4,7 +4,7 @@ from django import forms
 from django.views.generic.list import ListView
 import pandas as pd
 
-from .models import Document, QAC
+from .models import Document, QAC, Context
 from .vae import generator
 
 
@@ -32,13 +32,20 @@ def doc_register(request):
             qacs = QAC.objects.all()
             for qac in qacs:
                 qac.delete()
+            ctxs = Context.objects.all()
+            for ctx in ctxs:
+                ctx.delete()
             for idx, res in enumerate(results):
+                ctx = Context()
+                ctx.context = res['context']
+                ctx.save()
                 qac = QAC()
                 qac.idx = idx
                 qac.question = res['question']
                 qac.answer = res['answer']
-                qac.context = res['context']
+                qac.document = ctx
                 qac.save()
+
 
             return redirect('generator:gen_result')
     else:
@@ -46,6 +53,23 @@ def doc_register(request):
     return render(request, 'generator/doc_register.html', {
         'form': form
     })
+
+
+class DocList(ListView):
+    context_object_name = 'docs'
+    template_name = 'generator/doc_list.html'
+    paginate_by = 10
+
+    def get(self, request, *args, **kwargs):
+        self.object_list = Context.objects.all()
+        context = self.get_context_data(object_list=self.object_list)
+        return self.render_to_response(context)
+
+
+def doc_qa_list(request, doc_id):
+    doc = get_object_or_404(Context, pk=doc_id)
+    qacs = doc.qacs.all().order_by('id')
+    return render(request, 'generator/doc_qa_list.html', {'qacs': qacs, 'doc': doc})
 
 
 class ResultList(ListView):
@@ -71,7 +95,7 @@ def qac_del(request, qac_idx):
             qac.save()
             local_idx += 1
             dic = {}
-            # dic['context'] = qac.context
+            # dic['context'] = qac.document.context
             dic['answer'] = qac.answer
             dic['question'] = qac.question
             dics.append(dic)
