@@ -1,6 +1,5 @@
 .ipynb_checkpoints
 qa-system
-*.ipynb
 .idea
 Info-HCVAE/data
 !Info-HCVAE/data/kosodate
