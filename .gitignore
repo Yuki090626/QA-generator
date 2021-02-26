@@ -1,9 +1,11 @@
 .ipynb_checkpoints
-Info-HCVAE
 qa-system
 *.ipynb
 .idea
-
+Info-HCVAE/data
+!Info-HCVAE/data/kosodate
+Info-HCVAE/image
+Info-HCVAE/save
 QA_gen/media
 
 # Byte-compiled / optimized / DLL files
