@@ -36,13 +36,21 @@ def doc_register(request):
             for ctx in ctxs:
                 ctx.delete()
             for idx, res in enumerate(results):
-                ctx = Context()
-                ctx.context = res['context']
-                ctx.save()
                 qac = QAC()
                 qac.idx = idx
                 qac.question = res['question']
                 qac.answer = res['answer']
+                new_ctx = True
+                if idx > 1:
+                    ctxs = Context.objects.all()
+                    for ctx in ctxs:
+                        if ctx.context == res['context']:
+                            qac.document = ctx
+                            new_ctx = False
+                if new_ctx:
+                    ctx = Context()
+                    ctx.context = res['context']
+                    ctx.save()
                 qac.document = ctx
                 qac.save()
 
