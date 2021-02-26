@@ -6,7 +6,7 @@ Info-HCVAE/data
 !Info-HCVAE/data/kosodate
 Info-HCVAE/image
 Info-HCVAE/save
-QA_gen/media
+QA_gen/media/model/best_f1_model.pt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
