@@ -69,7 +69,7 @@ def QA_generation(filename, modelname, savename):
 
     trainer = VAETrainer(args)
     vae = DiscreteVAE(args).to(args.device)
-    vae.load_state_dict(torch.load(modelname)['state_dict'])
+    vae.load_state_dict(torch.load(modelname, map_location=torch.device(args.device))['state_dict'])
     trainer.vae = vae
 
 
